@@ -112,7 +112,6 @@ int enterDungeon(const std::string& Class ,int health ,int strength, int dexteri
     bool cursed;     // if the monster is cursed
     int monsterHealth; // health of the monster
     int monsterDamage; // damage of the monster
-    // change color of text
     std::cout << "You enter the dungeon" << std::endl;
 
     if (cursedchance == 1) {
