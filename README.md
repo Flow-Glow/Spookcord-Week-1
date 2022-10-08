@@ -2,7 +2,11 @@
 
 ## installation 
 
-My code uses [Clang](https://clang.llvm.org/get_started.html) to compile, but you can also use the replit link
+### Compile:
+My code uses [Clang](https://clang.llvm.org/get_started.html) to compile.
+
+### Replit link:
+[![Run on Repl.it](https://replit.com/badge/github/Flow-Glow/Spookcord-Week-1)](https://replit.com/new/github/Flow-Glow/Spookcord-Week-1)
 
 ## About
 This game is a fun text based RPG where you can choose from classes such as Swordsman, Mage, and Defender. The goal is to be able to kill as many monsters before dying. Each time you kill a monster you get an upgrade crystal you can use to upgrade you character. Each class has a special ability that has a 10% chance of working. Enjoy the game and I would be happy to see your high scores.  
