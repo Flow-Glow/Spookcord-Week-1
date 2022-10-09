@@ -1,8 +1,8 @@
 #include <iostream>
 #include <list>
 #include <tuple>
-#include<cstdlib>
-
+#include <cstdlib>
+#include <thread>
 
 
 int getData(std::list<int> data, int stat) {
@@ -108,7 +108,7 @@ std::tuple<std::list<int>, std::list<std::string>> characterCreation() {
 int enterDungeon(const std::string& Class ,int health ,int strength, int dexterity, int intelligence, int magicpower) {
     int upgradeCrystals = 0;   // number of upgrade crystals
     bool stun = false;         // if the monster is stunned
-    int cursedchance = rand() % 100 + 1; // chance of a cursed monster appearing
+    int cursedchance = rand() % 2 + 1; // chance of a cursed monster appearing
     bool cursed;     // if the monster is cursed
     int monsterHealth; // health of the monster
     int monsterDamage; // damage of the monster
@@ -128,20 +128,21 @@ int enterDungeon(const std::string& Class ,int health ,int strength, int dexteri
     }
     else{
         std::cout << "You have encountered a monster!" << std::endl;
-        monsterHealth = rand() % health/1.5 + 1;
+        monsterHealth = rand() % health/1.5 + 20;
     }
 
 
 
 
     std::cout << "Monster Health: " << monsterHealth << std::endl;
+    std::cout << "Your Health: " << health << std::endl;
     std::cout << "_____________________" << std::endl;
     std::cout << "What do you do? (A)ttack, (R)un: "<< std::endl;
     char action;
     std::cin >> action;
     while (0 <= monsterHealth) {
         if (action == 'A' || action == 'a') {
-            int chance = rand() % 10 + 1;
+            int chance = rand() % 5 + 1;
             if (Class == "Swordsman" && chance == 1){
                 int damage = (rand() % ((strength * magicpower)*2)+ 10)*2;
                 std::cout << "CRITICAL" << std::endl;
@@ -165,6 +166,7 @@ int enterDungeon(const std::string& Class ,int health ,int strength, int dexteri
                 }
                 std::cout << "You killed the monster!" << std::endl;
                 std::cout << "You got " << upgradeCrystals << " upgrade crystal(s)" << std::endl;
+                std::cout << "_______________________________" << std::endl;
                 break;
 
 
@@ -183,29 +185,33 @@ int enterDungeon(const std::string& Class ,int health ,int strength, int dexteri
             if (stun){
                 std::cout << "Monster are stunned" << std::endl;
                 monsterDamage = 0;
+                // attack again
+                int stun_dmg = rand() % ((strength * magicpower)/5)+ 10;
+                monsterHealth -= stun_dmg;
+                std::cout << "You hit the monster for " << stun_dmg << "stun damage" << std::endl;
                 stun = false;
-            }
 
-            health -= monsterDamage;
+            }
+            std::cout << health << " - " << monsterDamage << " = " << health - monsterDamage << std::endl;
+            health = health - monsterDamage;
             std::cout << "The monster did " << monsterDamage << " damage!" << std::endl;
 
 
-            health -= monsterDamage;
             if (health <= 0) {
+                std::cout << health << std::endl;
                 std::cout << "You died!" << std::endl;
                 return -1;
 
             }
             std::cout << "Your health: " << health << std::endl;
+            std::cout << "Monster Health: " << monsterHealth << std::endl;
             std::cout << "_____________________" << std::endl;
-
-
 
             std::cout << "What do you do? (A)ttack, (R)un: "<< std::endl;
             std::cin >> action;
         } else if (action == 'R' || action == 'r') {
             std::cout << "You ran away!" << std::endl;
-            break;
+            upgradeCrystals = 0;break;
         } else {
             std::cout << "Invalid action!" << std::endl;
             std::cout << "What do you do? (A)ttack, (R)un: "<< std::endl;
@@ -214,6 +220,37 @@ int enterDungeon(const std::string& Class ,int health ,int strength, int dexteri
     }
     return upgradeCrystals;
 }
+
+
+int spin_wheel(){
+    // spin the wheel
+    int wheel = rand() % 100 + 1;
+    if (wheel <= 50){// 50% chance of
+        return 1;
+    }
+    else if (wheel <= 75){// 25% chance
+        return 2;
+    }
+    else if (wheel <= 90){// 15% chance
+        return 3;
+    }
+    else if (wheel <= 95){// 5% chance
+        return 4;
+    }
+    else if (wheel <= 98){// 3% chance
+        return 5;
+    }
+    else if (wheel <= 99){// 1% chance
+        return 6;
+    }
+    else{
+        return 0;
+    }
+
+
+}
+
+
 
 int main() {
     std::cout << "Welcome to the {C++ Dungeons}!" << std::endl;
@@ -247,11 +284,53 @@ int main() {
             }
         } else if (dungeonChoice == 'N' || dungeonChoice == 'n') {
             std::cout << "You leave the dungeon!" << std::endl;
+            std::cout << "_____________________" << std::endl;
             // print health
             std::cout << "Your health: " << health << std::endl;
-            // print upgrade crystals
             std::cout << "Upgrade Crystals: " << upgradeCrystals << std::endl;
             if(upgradeCrystals > 0){
+                if(upgradeCrystals>=2){
+                    std::cout << "Would you like to use 2 upgrade crystals to spin the wheel of fortune? (Y/N):" << std::endl;
+
+                    char wheelChoice;
+                    std::cin >> wheelChoice;
+                    if(wheelChoice == 'Y' || wheelChoice == 'y'){
+                        upgradeCrystals -= 2;
+                        int wheel = spin_wheel();
+                        if(wheel == 1){
+                            std::cout << "You got 2 upgrade crystal!" << std::endl;
+                            upgradeCrystals += 2;
+                        }
+                        else if(wheel == 2){
+                            std::cout << "You got 5 upgrade crystals!" << std::endl;
+                            upgradeCrystals += 5;
+                        }
+                        else if(wheel == 3){
+                            std::cout << "You got 10 upgrade crystals!" << std::endl;
+                            upgradeCrystals += 10;
+                        }
+                        else if(wheel == 4){
+                            std::cout << "You got 4 upgrade crystals!" << std::endl;
+                            upgradeCrystals += 4;
+                        }
+                        else if(wheel == 5){
+                            std::cout << "You got x1.25 upgrade crystals!" << std::endl;
+                            upgradeCrystals = upgradeCrystals*1.25;
+                        }
+                        else if(wheel == 6){
+                            std::cout << "You got x2.5 upgrade crystals!" << std::endl;
+                            upgradeCrystals = upgradeCrystals*2.5;
+                        }
+                        else if (wheel == 0){
+                            std::cout << "You got 0 upgrade crystals!" << std::endl;
+                        }
+                        std::cout << "Upgrade Crystals: " << upgradeCrystals << std::endl;
+                        TotalCrystals+=upgradeCrystals;
+                    }
+                }
+                else{
+                    std::cout << "You need 2 upgrade crystals to spin the wheel of fortune!" << std::endl;
+                }
                 std::cout << "You can upgrade your stats!" << std::endl;
                 std::cout << "Do you want to upgrade your stats? (Y/N): ";
                 char upgradeChoice;
